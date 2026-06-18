@@ -10,6 +10,7 @@ from trapezia_document_reader.isolation import pdf_to_pages_isolated, run_isolat
 from trapezia_document_reader.scan import is_scanned
 from trapezia_document_reader.tables import extract_tables, Table
 from trapezia_document_reader.ocr import ocr_add_text_layer
+from trapezia_document_reader.reader import read_pdf
 
 __version__ = "0.1.0"
 
@@ -26,4 +27,5 @@ __all__ = [
     "run_isolated",
     "pdf_to_pages_isolated",
     "ocr_add_text_layer",
+    "read_pdf",
 ]
