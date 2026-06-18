@@ -5,8 +5,17 @@ from trapezia_document_reader.errors import (
     OcrError,
     OcrUnavailable,
 )
+from trapezia_document_reader.pages import pdf_to_pages, PageDict
 from trapezia_document_reader.scan import is_scanned
 
 __version__ = "0.1.0"
 
-__all__ = ["DocumentReadError", "OcrError", "OcrUnavailable", "__version__", "is_scanned"]
+__all__ = [
+    "DocumentReadError",
+    "OcrError",
+    "OcrUnavailable",
+    "__version__",
+    "is_scanned",
+    "pdf_to_pages",
+    "PageDict",
+]
