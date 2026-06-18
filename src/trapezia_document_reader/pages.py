@@ -7,7 +7,6 @@ import pdfplumber
 from trapezia_document_reader.errors import DocumentReadError
 
 PageDict = dict[str, Any]
-_WORD_ATTRS = ["x0", "x1", "top", "bottom", "size"]
 
 
 def _word(w: dict) -> dict:

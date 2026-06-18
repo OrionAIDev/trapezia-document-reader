@@ -8,7 +8,7 @@ def test_pages_shape(columnar_pdf):
     assert p["page"] == 1
     assert "Widget" in p["text"]
     assert set(p) == {"page", "text", "text_layout", "words", "lines"}
-    assert all({"text", "x0", "x1", "top", "bottom"} <= set(w) for w in p["words"])
+    assert all({"text", "x0", "x1", "top", "bottom", "size"} <= set(w) for w in p["words"])
 
 
 def test_ruled_pdf_has_lines(ruled_pdf):
