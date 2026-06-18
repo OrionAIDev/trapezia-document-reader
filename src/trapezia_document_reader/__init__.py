@@ -7,6 +7,7 @@ from trapezia_document_reader.errors import (
 )
 from trapezia_document_reader.pages import pdf_to_pages, PageDict
 from trapezia_document_reader.scan import is_scanned
+from trapezia_document_reader.tables import extract_tables, Table
 
 __version__ = "0.1.0"
 
@@ -18,4 +19,6 @@ __all__ = [
     "is_scanned",
     "pdf_to_pages",
     "PageDict",
+    "extract_tables",
+    "Table",
 ]
