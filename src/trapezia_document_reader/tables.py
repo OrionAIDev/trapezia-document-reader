@@ -26,26 +26,28 @@ def _ruled(page) -> list[Table]:
 def _column_bands(words, tol: float = 12.0) -> list[float]:
     """Cluster word left-edges (x0) into columns; return vertical-line x-coords.
 
-    Lines are placed midway between one column's rightmost x1 and the next
-    column's leftmost x0, plus outer bounds.
+    Words are sorted by x0 and grouped greedily: a word joins the current
+    column when its x0 is within ``tol`` of the previous word's x0, else it
+    starts a new column. Each separator is placed midway between one column's
+    rightmost edge (the max x1 of its actual members) and the next column's
+    leftmost edge, with a small outer pad on each side.
+
+    Assumes the inter-column gap exceeds the intra-column x0 spread (true for
+    whitespace-aligned reports); denser or overlapping columns may merge.
     """
     if not words:
         return []
-    starts = sorted(w["x0"] for w in words)
-    clusters: list[list[float]] = [[starts[0]]]
-    for x in starts[1:]:
-        if x - clusters[-1][-1] <= tol:
-            clusters[-1].append(x)
+    ordered = sorted(words, key=lambda w: w["x0"])
+    clusters: list[list[dict]] = [[ordered[0]]]
+    for w in ordered[1:]:
+        if w["x0"] - clusters[-1][-1]["x0"] <= tol:
+            clusters[-1].append(w)
         else:
-            clusters.append([x])
-    col_left = [min(c) for c in clusters]
-    # rightmost x1 of any word belonging (by nearest start) to each column
-    col_right = list(col_left)
-    for w in words:
-        ci = min(range(len(col_left)), key=lambda i: abs(w["x0"] - col_left[i]))
-        col_right[ci] = max(col_right[ci], w["x1"])
+            clusters.append([w])
+    col_left = [min(w["x0"] for w in c) for c in clusters]
+    col_right = [max(w["x1"] for w in c) for c in clusters]
     lines = [col_left[0] - 2.0]
-    for i in range(len(col_left) - 1):
+    for i in range(len(clusters) - 1):
         lines.append((col_right[i] + col_left[i + 1]) / 2.0)
     lines.append(col_right[-1] + 2.0)
     return lines
