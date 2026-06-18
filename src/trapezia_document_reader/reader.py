@@ -17,6 +17,8 @@ def read_pdf(
 
     ocr: "auto" (OCR iff scanned), "always", or "never".
     """
+    if ocr not in {"auto", "always", "never"}:
+        raise ValueError(f"ocr must be 'auto', 'always', or 'never'; got {ocr!r}")
     src = Path(path)
     do_ocr = ocr == "always" or (ocr == "auto" and is_scanned(src))
     working = ocr_add_text_layer(src, lang=lang) if do_ocr else src
