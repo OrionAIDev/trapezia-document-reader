@@ -15,6 +15,10 @@ def _sleep(seconds):
     return "done"
 
 
+def _big(n):
+    return "x" * n
+
+
 def test_run_isolated_returns_value():
     assert run_isolated(_add, 2, 3, timeout=10) == 5
 
@@ -22,6 +26,13 @@ def test_run_isolated_returns_value():
 def test_run_isolated_times_out():
     with pytest.raises(DocumentReadError):
         run_isolated(_sleep, 5, timeout=1)
+
+
+def test_run_isolated_handles_large_payload():
+    # Payload far exceeds the OS pipe buffer (~64KB). A join-before-drain
+    # implementation deadlocks and falsely times out here.
+    result = run_isolated(_big, 500_000, timeout=15)
+    assert len(result) == 500_000
 
 
 def test_pdf_to_pages_isolated(columnar_pdf):
