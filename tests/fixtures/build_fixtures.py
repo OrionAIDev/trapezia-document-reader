@@ -5,7 +5,7 @@ NO real provider/patient data — invented analytes and values only.
 """
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
@@ -52,15 +52,22 @@ def ruled_table(path: Path) -> None:
 
 
 def scanned_stub(path: Path) -> None:
-    """Image-only PDF (no text layer) for is_scanned/OCR tests."""
-    img = Image.new("RGB", (1000, 300), "white")
+    """Image-only PDF (no text layer) for is_scanned/OCR tests.
+
+    Rendered large and high-resolution so a real OCR engine (tesseract) can
+    read it cleanly: a low-res raster yields garbled, sub-threshold text and
+    makes the OCR round-trip test flaky.
+    """
+    img = Image.new("RGB", (2000, 900), "white")
     d = ImageDraw.Draw(img)
-    d.text((40, 40), "Widget 12.0 g/dL 10.0-15.0", fill="black")
-    d.text((40, 90), "Gadget 4.5 mmol 3.0-5.0", fill="black")
+    font = ImageFont.load_default(size=64)
+    for i, (name, val, unit, ref) in enumerate(ROWS):
+        d.text((80, 80 + i * 180), f"{name} {val} {unit} {ref}", fill="black", font=font)
     png = HERE / "_scanned_stub.png"
     img.save(png)
     c = canvas.Canvas(str(path), pagesize=letter)
-    c.drawImage(str(png), 40, 400, width=520, height=156)
+    # near full page width so the rasterized glyphs are large enough for OCR
+    c.drawImage(str(png), 56, 380, width=500, height=225)
     c.showPage()
     c.save()
     png.unlink()
