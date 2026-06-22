@@ -14,6 +14,8 @@ header synonyms can be merged in by the caller before invoking
 from __future__ import annotations
 
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # ---------------------------------------------------------------------------
 # Tunables
@@ -212,6 +214,23 @@ def split_value_unit(raw: str) -> tuple[float | None, str | None, str | None]:
     return None, s, None
 
 
+def parse_date(s: str, *, tz: str = "America/New_York") -> str | None:
+    """Parse ``MM/DD/YYYY`` / ``MM/DD/YY`` to an ISO-8601 datetime at midnight in ``tz``.
+
+    Defaults to Eastern Prevailing Time and is DST-aware: a January date gets the
+    EST offset (``-05:00``), a July date the EDT offset (``-04:00``). Returns
+    ``None`` on an unparseable string. Output is never UTC unless ``tz="UTC"``.
+    """
+    zone = ZoneInfo(tz)
+    for fmt in ("%m/%d/%Y", "%m/%d/%y"):
+        try:
+            dt = datetime.strptime(s, fmt).replace(tzinfo=zone)
+        except ValueError:
+            continue
+        return dt.isoformat()
+    return None
+
+
 def parse_ref(raw: str | None) -> dict | None:
     """Parse a reference-interval cell to {low, high, text} or None.
 
@@ -247,4 +266,5 @@ _column_bounds = column_bounds
 _assign_cells = assign_cells
 _row_text = row_text
 _split_value_unit = split_value_unit
+_parse_date = parse_date
 _parse_ref = parse_ref

@@ -10,7 +10,7 @@ authors = [{name = "Trapezia LLC"}]
 license = {text = "MIT"}
 requires-python = ">=3.11"
 classifiers = ["License :: OSI Approved :: MIT License"]
-dependencies = ["pdfplumber>=0.11,<1.0"]
+dependencies = ["pdfplumber>=0.11,<1.0", "tzdata>=2024.1"]
 
 [project.optional-dependencies]
 ocr = ["ocrmypdf>=16,<17"]
