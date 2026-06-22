@@ -6,21 +6,28 @@ import pdfplumber
 from trapezia_document_reader.errors import DocumentReadError
 
 SCANNED_TEXT_THRESHOLD = 50
+SCANNED_SAMPLE_PAGES = 5
 
 
 def is_scanned(path: str | Path) -> bool:
-    """Return True if page 0 has no real text layer but carries images.
+    """Return True if the sampled pages carry almost no text but do carry images.
 
-    Cheap gate (opens page 0 only). Used to decide whether OCR must run
-    before the page can be parsed.
+    Samples the first ``SCANNED_SAMPLE_PAGES`` pages: scanned iff the total
+    non-whitespace character count is below ``SCANNED_TEXT_THRESHOLD`` while at
+    least one sampled page has image objects.
     """
     try:
         with pdfplumber.open(str(path)) as pdf:
-            if not pdf.pages:
+            pages = pdf.pages[:SCANNED_SAMPLE_PAGES]
+            if not pages:
                 return False
-            page = pdf.pages[0]
-            text = page.extract_text() or ""
-            has_images = bool(page.images)
-    except Exception as exc:  # pdfplumber/pdfminer raise a variety of types
+            text_chars = 0
+            has_images = False
+            for page in pages:
+                stripped = "".join((page.extract_text() or "").split())
+                text_chars += len(stripped)
+                if page.images:
+                    has_images = True
+    except Exception as exc:
         raise DocumentReadError(f"cannot open {path}: {exc}") from exc
-    return len(text.strip()) < SCANNED_TEXT_THRESHOLD and has_images
+    return text_chars < SCANNED_TEXT_THRESHOLD and has_images
