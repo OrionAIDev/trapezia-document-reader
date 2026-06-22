@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trapezia-document-reader"
-version = "0.1.0"
+version = "0.2.0"
 description = "Clinical-agnostic PDF read + OCR primitives for the Trapezia platform"
 authors = [{name = "Trapezia LLC"}]
 license = {text = "MIT"}

@@ -12,4 +12,4 @@ def test_error_hierarchy():
 
 
 def test_version_exposed():
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.2.0"
