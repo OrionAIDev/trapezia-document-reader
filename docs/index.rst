@@ -13,5 +13,7 @@ trapezia-document-reader
    :members:
 .. automodule:: trapezia_document_reader.ocr
    :members:
+.. automodule:: trapezia_document_reader.render
+   :members:
 .. automodule:: trapezia_document_reader.isolation
    :members:
