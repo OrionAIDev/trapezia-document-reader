@@ -10,13 +10,14 @@ from trapezia_document_reader.isolation import pdf_to_pages_isolated, run_isolat
 from trapezia_document_reader.scan import is_scanned
 from trapezia_document_reader.tables import extract_tables, Table
 from trapezia_document_reader.ocr import ocr_add_text_layer
+from trapezia_document_reader.render import render_page_images
 from trapezia_document_reader.reader import read_pdf
 from trapezia_document_reader.columnar import (
     clean_words, group_rows, find_columns, column_bounds, assign_cells,
     row_text, split_value_unit, parse_ref, parse_date, HEADER_SYNONYMS,
 )
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 __all__ = [
     "DocumentReadError",
@@ -31,6 +32,7 @@ __all__ = [
     "run_isolated",
     "pdf_to_pages_isolated",
     "ocr_add_text_layer",
+    "render_page_images",
     "read_pdf",
     "clean_words",
     "group_rows",

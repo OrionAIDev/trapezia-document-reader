@@ -19,6 +19,7 @@ OCRs the document if needed, then returns its pages:
 The remaining exports are lower-level primitives for advanced/explicit use:
 - `is_scanned(path)` — image-only scan vs born-digital
 - `ocr_add_text_layer(path, ...)` — add a searchable text layer (ocrmypdf)
+- `render_page_images(path, dpi=200, pages=None)` — rasterize pages to PNG bytes (for vision-LLM extraction)
 - `pdf_to_pages(path)` — per-page text + layout + word boxes + lines
 - `extract_tables(path, page_number, strategy=...)` — ruled table extraction; raw cells only
 - `run_isolated` / `pdf_to_pages_isolated` — bound heavy calls by timeout in a worker process

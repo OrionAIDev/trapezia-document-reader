@@ -4,17 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trapezia-document-reader"
-version = "0.2.1"
+version = "0.3.0"
 description = "Clinical-agnostic PDF read + OCR primitives for the Trapezia platform"
 authors = [{name = "Trapezia LLC"}]
 license = {text = "MIT"}
 requires-python = ">=3.11"
 classifiers = ["License :: OSI Approved :: MIT License"]
-dependencies = ["pdfplumber>=0.11,<1.0", "tzdata>=2024.1"]
+dependencies = [
+    "pdfplumber>=0.11,<1.0",
+    "tzdata>=2024.1",
+    # render_page_images: pure-wheel deps (no system binaries), so kept in core.
+    "pypdfium2>=4,<5",
+    "pillow>=10.1",
+]
 
 [project.optional-dependencies]
 ocr = ["ocrmypdf>=16,<17"]
-dev = ["pytest>=8", "reportlab>=4", "pillow>=10.1"]
+dev = ["pytest>=8", "reportlab>=4"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
