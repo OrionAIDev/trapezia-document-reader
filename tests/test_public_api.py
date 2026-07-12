@@ -20,4 +20,4 @@ def test_public_surface():
 
 def test_version_matches_metadata():
     assert tdr.__version__ == importlib.metadata.version("trapezia-document-reader")
-    assert tdr.__version__ == "0.3.0"
+    assert tdr.__version__ == "0.3.1"

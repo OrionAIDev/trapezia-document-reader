@@ -17,7 +17,7 @@ from trapezia_document_reader.columnar import (
     row_text, split_value_unit, parse_ref, parse_date, HEADER_SYNONYMS,
 )
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 __all__ = [
     "DocumentReadError",

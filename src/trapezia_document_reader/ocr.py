@@ -1,22 +1,47 @@
 """Add a searchable text layer to a scanned PDF via ocrmypdf (out-of-process)."""
+import os
+import tempfile
 from pathlib import Path
 
 from trapezia_document_reader.errors import OcrError, OcrUnavailable
 from trapezia_document_reader.isolation import run_isolated
 
+# Default OCR ceiling. Generous because the Ghostscript-10 fallback re-OCRs every
+# page (force_ocr), which is far slower than skip_text; a large scan legitimately
+# takes minutes. Callers may override via ``timeout=``.
+DEFAULT_OCR_TIMEOUT = 600
+
 
 def _ocr_impl(src: str, dst: str, lang: str, force: bool, opts: dict) -> str:
     import ocrmypdf
 
-    ocrmypdf.ocr(
-        src,
-        dst,
-        language=lang,
-        force_ocr=force,
-        skip_text=not force,
-        progress_bar=False,
-        **opts,
-    )
+    def _run(force_ocr: bool) -> None:
+        ocrmypdf.ocr(
+            src,
+            dst,
+            language=lang,
+            force_ocr=force_ocr,
+            skip_text=not force_ocr,
+            progress_bar=False,
+            **opts,
+        )
+
+    try:
+        _run(force_ocr=force)
+    except Exception as exc:  # noqa: BLE001 — narrowed by the gs-guard signature below
+        # Debian bookworm's Ghostscript (10.0.0) is on ocrmypdf's deny-list for the
+        # --skip-text/--redo-ocr paths (that gs range can corrupt PDFs with existing
+        # text). When that guard blocks the lossless skip_text attempt, fall back to
+        # --force-ocr (re-OCR every page) so extraction still succeeds. Only the
+        # version guard is retried; a genuinely missing binary or unrelated error
+        # (and an explicit force=True request) propagates unchanged.
+        msg = str(exc).lower()
+        gs_guard = "ghostscript" in msg and (
+            "--force-ocr" in msg or "regressions" in msg or "skip-text" in msg
+        )
+        if force or not gs_guard:
+            raise
+        _run(force_ocr=True)
     return dst
 
 
@@ -32,7 +57,7 @@ def ocr_add_text_layer(
     oversample: int | None = None,
     optimize: int | None = None,
     tesseract_psm: int | None = None,
-    timeout: int = 120,
+    timeout: int = DEFAULT_OCR_TIMEOUT,
 ) -> Path:
     """Return a NEW PDF with an invisible OCR text layer; input untouched.
 
@@ -55,7 +80,15 @@ def ocr_add_text_layer(
       block — sometimes reads tabular lab columns better than the default).
     """
     src = Path(path)
-    dst = Path(out_path) if out_path else src.with_suffix(".ocr.pdf")
+    if out_path is not None:
+        dst = Path(out_path)
+    else:
+        # Write the intermediate OCR'd PDF to a temp file, NOT next to the source:
+        # the source may live in a read-only mount (e.g. a wiki vault raw/ dir), and
+        # a sibling ``.ocr.pdf`` there fails with OutputFileAccessError.
+        fd, tmp = tempfile.mkstemp(prefix=f"{src.stem}.", suffix=".ocr.pdf")
+        os.close(fd)
+        dst = Path(tmp)
     try:
         import ocrmypdf  # noqa: F401
     except ImportError as exc:
