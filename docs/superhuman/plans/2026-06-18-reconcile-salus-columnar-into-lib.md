@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.11+, pdfplumber, zoneinfo+tzdata, pytest. Two repos: `C:\Users\Chris\dev\trapezia-document-reader` (Phase A), `C:\Users\Chris\dev\trapezia-salus` (Phase B).
 
-**Spec:** `docs/superpowers/specs/2026-06-18-reconcile-salus-columnar-into-lib.md`
+**Spec:** `docs/superhuman/specs/2026-06-18-reconcile-salus-columnar-into-lib.md`
 
 **Decisions locked (Chris, 2026-06-18):** lib adopts salus primitives; drop crude `_column_bands`, keep `ruled`; `strip_value_tail_flag`→salus, `HEADER_SYNONYMS`→lib default; `parse_date` defaults to Eastern (`America/New_York`, DST-aware), never UTC.
 
