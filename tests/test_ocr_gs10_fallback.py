@@ -18,7 +18,6 @@ import pytest
 
 import trapezia_document_reader.ocr as ocr_mod
 import trapezia_document_reader.reader as reader_mod
-from trapezia_document_reader.errors import OcrError, OcrUnavailable
 
 GS10_MSG = (
     "Ghostscript 10.0.0 through 10.02.0 (your version: 10.0.0) contain serious "

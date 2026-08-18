@@ -32,7 +32,10 @@ def extract_tables(path: str | Path, page_number: int, *, strategy: str = "ruled
     ``column_bounds``/``assign_cells``), which the lab extractors compose directly.
     """
     if strategy != "ruled":
-        raise ValueError(f"only 'ruled' is supported; for columnar use the columnar primitives (got {strategy!r})")
+        raise ValueError(
+            "only 'ruled' is supported; for columnar use the columnar "
+            f"primitives (got {strategy!r})"
+        )
     try:
         with pdfplumber.open(str(path)) as pdf:
             page = pdf.pages[page_number - 1]
