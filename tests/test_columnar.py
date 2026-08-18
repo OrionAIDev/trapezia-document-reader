@@ -1,6 +1,10 @@
 from trapezia_document_reader.columnar import (
-    assign_cells, clean_words, column_bounds, find_columns,
-    group_rows, parse_ref, row_text, split_value_unit, HEADER_SYNONYMS,
+    assign_cells,
+    column_bounds,
+    find_columns,
+    group_rows,
+    parse_ref,
+    split_value_unit,
 )
 
 
