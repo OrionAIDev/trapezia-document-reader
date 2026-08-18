@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.11+, pdfplumber (base), ocrmypdf (`[ocr]` extra → system tesseract+ghostscript), pytest + reportlab + Pillow (dev fixtures), Sphinx (docs).
 
-**Spec:** `docs/superpowers/specs/2026-06-18-trapezia-document-reader-design.md`
+**Spec:** `docs/superhuman/specs/2026-06-18-trapezia-document-reader-design.md`
 
 ---
 
