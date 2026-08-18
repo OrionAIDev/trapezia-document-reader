@@ -5,8 +5,9 @@ isolating them keeps a long-lived caller (the salus daemon) alive.
 """
 import multiprocessing as mp
 import queue as _queue
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from trapezia_document_reader.errors import DocumentReadError
 from trapezia_document_reader.pages import PageDict, pdf_to_pages
@@ -37,7 +38,7 @@ def run_isolated(func: Callable[..., Any], *args: Any, timeout: float) -> Any:
     except _queue.Empty:
         p.terminate()
         p.join()
-        raise DocumentReadError(f"isolated call timed out after {timeout}s")
+        raise DocumentReadError(f"isolated call timed out after {timeout}s") from None
     p.join()
     if status == "err":
         raise DocumentReadError(f"isolated call failed: {payload}")
